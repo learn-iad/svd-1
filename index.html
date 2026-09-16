@@ -3,32 +3,312 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#217346">
+  <meta name="theme-color" content="#185c37">
   <title>Практика: готовим данные для сводной таблицы</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="hello.gif" fetchpriority="high">
   <link rel="preload" as="image" href="talk.gif" fetchpriority="high">
   <link rel="stylesheet" href="artem-assistant.css">
   <style>
-    *{box-sizing:border-box}html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-    body{margin:0;min-height:100vh;min-height:100dvh;font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;background:#e7e7e7;color:#222;display:flex;flex-direction:column;padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
-    .task-banner{background:#fff;border:1px solid #c6c6c6;border-radius:6px;padding:12px 14px;margin:0 auto 8px;box-shadow:0 1px 4px rgba(0,0,0,.06);max-width:980px;width:100%}.task-banner.success{background:#e8f5e9;border-color:#a5d6a7}.task-banner p{margin:0;font-size:.96rem;line-height:1.45}.task-banner b{color:#217346}
-    .excel-shell{flex:1;display:flex;flex-direction:column;min-height:0;background:#fff;border:1px solid #a0a0a0;border-radius:3px;overflow:hidden;max-width:980px;width:100%;margin:0 auto}.title-bar{display:flex;align-items:center;gap:8px;padding:5px 8px;background:linear-gradient(180deg,#fff 0%,#f3f3f3 100%);border-bottom:1px solid #d4d4d4;flex-wrap:wrap}.quick-access{display:flex;gap:2px}.quick-access button{width:28px;height:24px;border:1px solid transparent;background:transparent;border-radius:2px;cursor:pointer;font-size:14px}.quick-access button:hover{background:#e5e5e5;border-color:#c6c6c6}.doc-title{flex:1;text-align:center;font-size:13px;color:#333;min-width:150px}
-    .ribbon-wrap{background:#f3f3f3;border-bottom:1px solid #d4d4d4}.ribbon-tabs{display:flex;flex-wrap:wrap;padding:0 4px;border-bottom:1px solid #d4d4d4}.ribbon-tabs button{padding:6px 12px 8px;font-size:12px;border:none;background:transparent;cursor:pointer;color:#444;font-family:inherit}.ribbon-tabs button.active{background:#fff;color:#217346;font-weight:600;border:1px solid #d4d4d4;border-bottom-color:#fff;margin-bottom:-1px}.ribbon-panel{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start;padding:8px 10px 10px;background:#fff;min-height:58px}.ribbon-group{display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 10px 4px;border-right:1px solid #e0e0e0}.ribbon-group:last-child{border-right:none}.ribbon-row{display:flex;gap:4px;flex-wrap:wrap;align-items:center}.g-label{font-size:11px;color:#666}.rb{padding:6px 10px;font-size:12px;border:1px solid #c6c6c6;background:linear-gradient(180deg,#fafafa 0%,#ececec 100%);border-radius:2px;cursor:pointer;font-family:inherit;min-height:28px}.rb:hover{background:#fff}.rb.primary{background:linear-gradient(180deg,#e8f4ec 0%,#cde6d4 100%);border-color:#217346}.rb.active-toggle{background:linear-gradient(180deg,#d4edda 0%,#b8daff 100%);border-color:#217346;font-weight:600}.fmt-select{padding:5px 6px;font-size:12px;border:1px solid #c6c6c6;border-radius:2px;font-family:inherit;min-height:28px}
-    .formula-bar{display:flex;align-items:center;gap:6px;padding:4px 8px;background:#fff;border-bottom:1px solid #d4d4d4;font-size:12px}.name-box{width:72px;padding:3px 6px;border:1px solid #c6c6c6;border-radius:2px;background:#fff;text-align:center;font-family:inherit}.fx-label{color:#888;font-style:italic;width:22px;text-align:center}.formula-input{flex:1;padding:4px 8px;border:1px solid #c6c6c6;border-radius:2px;font-family:inherit;font-size:12px}
-    .grid-scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;background:#fcfcfc;min-height:240px;outline:none}table.excel{border-collapse:collapse;font-size:12px;user-select:none;table-layout:fixed}table.excel th,table.excel td{width:100px;min-width:78px;height:26px;border:1px solid #d4d4d4;padding:2px 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}table.excel thead th{background:#217346;color:#fff;font-weight:600;text-align:center;position:relative}table.excel thead th.corner{width:28px;min-width:28px;max-width:28px;padding:0}table.excel thead th.col-header{cursor:pointer}table.excel thead th.col-header.header-selected{background:#185a34;box-shadow:inset 0 0 0 1px #fff}table.excel tbody th.row-header{background:#e8e8e8;color:#333;font-weight:600;text-align:center;width:28px;min-width:28px;max-width:28px;font-size:11px;padding:0 2px;cursor:pointer}table.excel tbody th.row-header.header-selected{background:#cde6d4;box-shadow:inset 0 0 0 1px #217346}table.excel tbody td{position:relative;background:#fff;cursor:cell;text-align:right}table.excel tbody td.text-left{text-align:left}table.excel tbody td.range-active{outline:2px solid #217346;outline-offset:-2px;z-index:1}table.excel tbody td.editing-cell{outline:2px solid #217346;outline-offset:-2px;z-index:2;padding:0}table.excel tbody td.range-selected{background:#e8f4ec}table.excel tbody td.merged-cell{background:#fff8e1}table.excel tbody td.cell-error{color:#c00!important;font-weight:600}table.excel.smart-table tbody tr:nth-child(even) td:not([style*="background"]){background:#e8f5e9}table.excel.smart-table tbody tr:nth-child(odd) td:not([style*="background"]){background:#fff}table.excel.smart-table thead tr:first-child th,table.excel.smart-table tbody tr:first-child td{background:#217346!important;color:#fff!important;font-weight:600;text-align:center}.cell-inline-input{position:absolute;inset:0;width:100%;height:100%;box-sizing:border-box;border:none;outline:none;padding:2px 4px;margin:0;font:inherit;font-size:12px;line-height:20px;background:#fff;color:#222;caret-color:#222;z-index:2;text-align:right;border-radius:0;-webkit-appearance:none;appearance:none}.cell-inline-input:focus{border:none;outline:none;box-shadow:none;background:#fff}.text-left .cell-inline-input{text-align:left}
-    .filter-arrow{display:inline-block;margin-left:4px;cursor:pointer;font-size:9px;opacity:.7;vertical-align:middle;padding:0 2px}.filter-arrow:hover,.filter-arrow.active{opacity:1;background:rgba(255,255,255,.2);border-radius:2px}
-    .filter-dropdown{position:fixed;background:#fff;border:1px solid #b4b4b4;border-radius:3px;box-shadow:0 4px 16px rgba(0,0,0,.2);padding:8px 10px;z-index:1500;min-width:190px;max-height:320px;overflow-y:auto;font-size:12px}.filter-dropdown label{display:flex;align-items:center;gap:6px;padding:4px 4px;cursor:pointer;border-radius:2px}.filter-dropdown label:hover{background:#e8f4ec}.filter-dropdown hr{margin:5px 0;border:none;border-top:1px solid #e0e0e0}.filter-dropdown .filter-actions{display:flex;gap:6px;justify-content:flex-end;margin-top:8px}.filter-dropdown .filter-actions button{padding:5px 14px;font-size:11px;cursor:pointer;border:1px solid #217346;background:#cde6d4;border-radius:2px;font-family:inherit;font-weight:600}.filter-dropdown .filter-actions button.cancel-btn{background:#f0f0f0;border-color:#b4b4b4;color:#444;font-weight:400}
-    .sheet-bar{display:flex;align-items:flex-end;background:#e1e1e1;border-top:1px solid #b4b4b4;padding:2px 4px 0}.sheet-tab{padding:5px 14px 6px;font-size:12px;border:1px solid #b4b4b4;border-bottom:none;background:linear-gradient(180deg,#ececec 0%,#d8d8d8 100%);cursor:pointer;font-family:inherit;border-radius:2px 2px 0 0;margin-right:1px}.sheet-tab.active{background:#fff;font-weight:600;padding-bottom:7px;margin-bottom:-1px}
-    .toast{position:fixed;top:50%;left:50%;z-index:1200;max-width:min(92vw,460px);padding:14px 18px;border-radius:8px;font-size:13px;line-height:1.45;color:#1a1a1a;background:#fff;border:1px solid #b4b4b4;box-shadow:0 12px 40px rgba(0,0,0,.2);transform:translate(-50%,-50%) scale(.96);opacity:0;visibility:hidden;pointer-events:none;transition:.22s}.toast.visible{transform:translate(-50%,-50%) scale(1);opacity:1;visibility:visible}.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:1100;display:none;align-items:center;justify-content:center;padding:16px}.modal-overlay.visible{display:flex}.modal{background:#fff;border:1px solid #a0a0a0;border-radius:3px;box-shadow:0 4px 24px rgba(0,0,0,.2);max-width:440px;width:100%;font-size:13px}.modal-title{padding:10px 14px;background:linear-gradient(180deg,#fff 0%,#f3f3f3 100%);border-bottom:1px solid #d4d4d4;font-weight:600}.modal-body{padding:14px 16px}.modal-body label{display:block;margin-bottom:4px;font-size:12px;color:#555}.modal-body input[type=text],.modal-body select{width:100%;padding:6px 8px;border:1px solid #c6c6c6;border-radius:2px;font-family:inherit;font-size:12px;margin-bottom:10px}.modal-body .modal-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}.modal-body .modal-row input{margin:0}.modal-footer{padding:10px 12px;border-top:1px solid #d4d4d4;display:flex;justify-content:flex-end;gap:8px;background:#fafafa}.modal-footer button{padding:7px 16px;font-size:12px;cursor:pointer;font-family:inherit;border-radius:2px;border:1px solid #217346;background:#cde6d4;font-weight:600}.modal-footer button.secondary{background:#f0f0f0;border-color:#b4b4b4;color:#444;font-weight:400}.kbd-hint{font-size:11px;color:#888;margin-top:6px}
-    .error-indicator{position:absolute;top:2px;left:2px;width:6px;height:6px;background:#4caf50;border-radius:50%;pointer-events:none}
-    .row-context-menu{position:fixed;z-index:1600;background:#fff;border:1px solid #b4b4b4;border-radius:3px;box-shadow:0 4px 16px rgba(0,0,0,.18);padding:4px 0;min-width:140px;font-size:12px}.row-context-menu button{display:block;width:100%;padding:7px 14px;border:none;background:transparent;text-align:left;font-family:inherit;font-size:12px;cursor:pointer;color:#222}.row-context-menu button:hover{background:#e8f4ec}
-    @media (max-width:768px){.formula-input,.cell-inline-input,.name-box{font-size:16px!important}table.excel th,table.excel td{width:88px;min-width:68px;height:30px}.ribbon-tabs button{padding:4px 8px;font-size:11px}.ribbon-panel{padding:5px 6px;min-height:0}.rb{padding:5px 7px;font-size:11px}}
+    :root{
+      --xl-green:#217346;--xl-green-dark:#185c37;--xl-green-light:#e8f5ee;--xl-green-glow:rgba(33,115,70,.28);
+      --surface:#fff;--surface-muted:#f6f8f7;--surface-ribbon:#fafbfa;
+      --border:#dde3df;--border-strong:#c5cec8;
+      --text:#1a2420;--text-muted:#5c6b64;--text-soft:#8a9690;
+      --shadow-sm:0 1px 2px rgba(24,40,32,.06);--shadow-md:0 8px 24px rgba(24,40,32,.08),0 2px 6px rgba(24,40,32,.04);
+      --shadow-lg:0 20px 50px rgba(24,40,32,.12),0 4px 14px rgba(33,115,70,.08);
+      --radius-sm:6px;--radius-md:10px;--radius-lg:14px;
+      --font:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+    }
+    *{box-sizing:border-box}
+    html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+    body{
+      margin:0;min-height:100vh;min-height:100dvh;font-family:var(--font);color:var(--text);
+      background:radial-gradient(ellipse 120% 80% at 50% -20%,rgba(33,115,70,.14),transparent 55%),
+        linear-gradient(165deg,#eef3f0 0%,#e4ebe6 45%,#dce5df 100%);
+      display:flex;flex-direction:column;align-items:center;
+      padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));
+    }
+    .app-header{max-width:1024px;width:100%;margin-bottom:10px;padding:0 2px}
+    .app-header h1{margin:0;font-size:1.05rem;font-weight:700;letter-spacing:-.02em;color:var(--xl-green-dark)}
+    .task-banner{
+      position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);
+      padding:14px 16px 14px 20px;margin:0 auto 12px;box-shadow:var(--shadow-sm);max-width:1024px;width:100%;
+      overflow:hidden;transition:border-color .2s,box-shadow .2s;
+    }
+    .task-banner::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--xl-green) 0%,var(--xl-green-dark) 100%);border-radius:var(--radius-md) 0 0 var(--radius-md)}
+    .task-banner.success{background:linear-gradient(135deg,#f3fbf6 0%,#e8f5ee 100%);border-color:#a8d5b8;box-shadow:0 4px 16px rgba(33,115,70,.1)}
+    .task-banner.success::before{background:linear-gradient(180deg,#43a047 0%,var(--xl-green) 100%)}
+    .task-banner p{margin:0;font-size:.94rem;line-height:1.55;color:var(--text)}
+    .task-banner b{color:var(--xl-green-dark);font-weight:600}
+    .excel-shell{
+      flex:1;display:flex;flex-direction:column;min-height:0;background:var(--surface);
+      border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;
+      max-width:1024px;width:100%;margin:0 auto;box-shadow:var(--shadow-lg);
+    }
+    .excel-shell::before{content:"";display:block;height:3px;background:linear-gradient(90deg,var(--xl-green-dark),var(--xl-green) 40%,#3d9970)}
+    .title-bar{
+      display:flex;align-items:center;gap:10px;padding:8px 14px;
+      background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap;
+    }
+    .quick-access{display:flex;gap:4px}
+    .quick-access button{
+      display:flex;align-items:center;justify-content:center;
+      width:32px;height:30px;border:1px solid var(--border);background:var(--surface-muted);
+      border-radius:var(--radius-sm);cursor:pointer;color:var(--text-muted);padding:0;
+      transition:background .15s,border-color .15s,color .15s,transform .1s;
+    }
+    .quick-access button svg{display:block;flex-shrink:0}
+    .quick-access button:hover{background:var(--xl-green-light);border-color:#b8d4c4;color:var(--xl-green-dark)}
+    .quick-access button:active{transform:scale(.96)}
+    .split-btn{display:inline-flex;align-items:stretch;border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);background:var(--surface);overflow:hidden;vertical-align:top}
+    .split-btn-main{
+      display:inline-flex;align-items:center;gap:5px;border:none;background:transparent;padding:6px 10px;
+      font-size:11px;font-weight:500;line-height:1.25;color:var(--text);cursor:pointer;font-family:inherit;
+      text-align:left;transition:background .15s;
+    }
+    .split-btn-main:hover{background:var(--surface-muted)}
+    .split-btn-multiline{flex-direction:row;align-items:center;gap:5px;padding:3px 8px}
+    .split-btn-multiline .split-btn-text{line-height:1.15;font-size:10.5px;white-space:nowrap}
+    .split-btn-icon{display:flex;align-items:center;justify-content:center;color:var(--xl-green-dark);flex-shrink:0}
+    .split-btn-menu{
+      display:flex;align-items:center;justify-content:center;border:none;border-left:1px solid var(--border);
+      background:var(--surface-muted);padding:0 7px;min-width:22px;cursor:pointer;color:var(--text-muted);
+      font-size:11px;transition:background .15s,color .15s;
+    }
+    .split-btn-menu:hover{background:var(--xl-green-light);color:var(--xl-green-dark)}
+    .ribbon-menu{
+      position:fixed;z-index:1550;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);
+      box-shadow:var(--shadow-lg);padding:4px 0;min-width:240px;font-size:12px;
+    }
+    .ribbon-menu button{
+      display:block;width:100%;padding:8px 16px;border:none;background:transparent;text-align:left;
+      font-family:inherit;font-size:12px;cursor:pointer;color:var(--text);transition:background .12s;
+    }
+    .ribbon-menu button:hover{background:var(--xl-green-light);color:var(--xl-green-dark)}
+    .ribbon-menu hr{margin:4px 0;border:none;border-top:1px solid var(--border)}
+    .doc-title{
+      flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+      font-size:13px;font-weight:500;color:var(--text);min-width:150px;
+    }
+    .doc-title::before{
+      content:"";width:18px;height:18px;border-radius:4px;
+      background:linear-gradient(145deg,var(--xl-green) 0%,var(--xl-green-dark) 100%);
+      box-shadow:0 1px 3px rgba(33,115,70,.35);flex-shrink:0;
+    }
+    .ribbon-wrap{background:var(--surface-ribbon);border-bottom:1px solid var(--border)}
+    .ribbon-tabs{display:flex;flex-wrap:wrap;gap:2px;padding:6px 10px 0;border-bottom:1px solid var(--border)}
+    .ribbon-tabs button{
+      padding:8px 14px 10px;font-size:12px;font-weight:500;border:none;background:transparent;
+      cursor:pointer;color:var(--text-muted);font-family:inherit;border-radius:var(--radius-sm) var(--radius-sm) 0 0;
+      transition:color .15s,background .15s;position:relative;
+    }
+    .ribbon-tabs button:hover{color:var(--text);background:rgba(255,255,255,.7)}
+    .ribbon-tabs button.active{
+      background:var(--surface);color:var(--xl-green-dark);font-weight:600;
+      box-shadow:0 -1px 0 var(--border) inset;
+    }
+    .ribbon-tabs button.active::after{
+      content:"";position:absolute;left:12px;right:12px;bottom:0;height:2px;
+      background:var(--xl-green);border-radius:2px 2px 0 0;
+    }
+    .ribbon-panel{
+      display:flex;gap:4px;flex-wrap:wrap;align-items:flex-start;padding:8px 12px 10px;
+      background:var(--surface);min-height:48px;
+    }
+    .ribbon-group{
+      display:flex;flex-direction:column;align-items:center;gap:5px;
+      padding:0 14px 2px;border-right:1px solid var(--border);
+    }
+    .ribbon-group:last-child{border-right:none}
+    .ribbon-row{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+    .g-label{font-size:10px;font-weight:500;color:var(--text-soft);letter-spacing:.02em;text-transform:uppercase}
+    .rb{
+      padding:7px 11px;font-size:12px;font-weight:500;border:1px solid var(--border);
+      background:var(--surface);border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;
+      min-height:30px;color:var(--text);box-shadow:var(--shadow-sm);
+      transition:background .15s,border-color .15s,box-shadow .15s,transform .1s;
+    }
+    .rb:hover{background:var(--surface-muted);border-color:var(--border-strong);box-shadow:0 2px 6px rgba(24,40,32,.06)}
+    .rb:active{transform:translateY(1px)}
+    .rb.primary{background:linear-gradient(180deg,#f0faf4 0%,var(--xl-green-light) 100%);border-color:#9ccfb0;color:var(--xl-green-dark)}
+    .rb.primary:hover{background:linear-gradient(180deg,#fff 0%,#dff0e6 100%)}
+    .rb.active-toggle{background:var(--xl-green-light);border-color:var(--xl-green);color:var(--xl-green-dark);font-weight:600;box-shadow:0 0 0 2px rgba(33,115,70,.12)}
+    .fmt-select{
+      padding:6px 10px;font-size:12px;font-weight:500;border:1px solid var(--border);border-radius:var(--radius-sm);
+      font-family:inherit;min-height:30px;min-width:132px;max-width:168px;background:var(--surface);
+      cursor:pointer;color:var(--text);box-shadow:var(--shadow-sm);
+    }
+    .fmt-select:focus{outline:none;border-color:var(--xl-green);box-shadow:0 0 0 3px rgba(33,115,70,.12)}
+    .fmt-btn{min-width:34px;padding:7px 9px;font-weight:700;font-variant-numeric:tabular-nums}
+    .formula-bar{
+      display:flex;align-items:center;gap:8px;padding:6px 12px;
+      background:var(--surface-muted);border-bottom:1px solid var(--border);font-size:12px;
+    }
+    .name-box{
+      width:76px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);
+      background:var(--surface);text-align:center;font-family:inherit;font-weight:600;font-size:11px;color:var(--xl-green-dark);
+    }
+    .fx-label{color:var(--text-soft);font-style:italic;font-weight:600;font-size:11px;width:22px;text-align:center}
+    .formula-input{
+      flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);
+      font-family:inherit;font-size:12px;background:var(--surface);color:var(--text);
+      transition:border-color .15s,box-shadow .15s;
+    }
+    .formula-input:focus{outline:none;border-color:var(--xl-green);box-shadow:0 0 0 3px rgba(33,115,70,.1)}
+    .grid-scroll{
+      flex:1;overflow:auto;-webkit-overflow-scrolling:touch;
+      background:linear-gradient(180deg,#fafcfb 0%,#f4f7f5 100%);min-height:260px;outline:none;
+    }
+    table.excel{width:100%;border-collapse:separate;border-spacing:0;font-size:12px;user-select:none;table-layout:fixed}
+    table.excel col.col-rowhead{width:28px}
+    table.excel th,table.excel td{
+      height:28px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+      padding:3px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    }
+    table.excel thead th{
+      background:linear-gradient(180deg,#268052 0%,var(--xl-green-dark) 100%);
+      color:#fff;font-weight:600;text-align:center;position:sticky;top:0;z-index:3;
+      box-shadow:0 1px 0 rgba(0,0,0,.08);
+    }
+    table.excel thead th.corner{width:28px;min-width:28px;max-width:28px;padding:0;background:var(--xl-green-dark)}
+    table.excel thead th.col-header{cursor:pointer;transition:filter .15s}
+    table.excel thead th.col-header:hover{filter:brightness(1.06)}
+    table.excel thead th.col-header.header-selected{background:var(--xl-green-dark);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+    table.excel tbody th.row-header{
+      background:linear-gradient(90deg,#eef2ef 0%,#e6ebe8 100%);color:var(--text-muted);
+      font-weight:600;text-align:center;width:28px;min-width:28px;max-width:28px;
+      font-size:11px;padding:0 2px;cursor:pointer;position:sticky;left:0;z-index:2;
+    }
+    table.excel tbody th.row-header.header-selected{background:var(--xl-green-light);color:var(--xl-green-dark);box-shadow:inset 0 0 0 2px var(--xl-green)}
+    table.excel tbody td{position:relative;background:var(--surface);cursor:cell;text-align:right;transition:background .1s}
+    table.excel tbody tr:nth-child(even) td:not(.range-selected):not(.merged-cell){background:#fcfdfc}
+    table.excel tbody td.text-left{text-align:left}
+    table.excel tbody td.range-active{outline:2px solid var(--xl-green);outline-offset:-2px;z-index:1;box-shadow:inset 0 0 0 1px rgba(33,115,70,.15)}
+    table.excel tbody td.editing-cell{outline:2px solid var(--xl-green);outline-offset:-2px;z-index:2;padding:0;box-shadow:0 0 0 3px var(--xl-green-glow)}
+    table.excel tbody td.range-selected{background:rgba(33,115,70,.1)}
+    table.excel tbody td.merged-cell{background:#fffbeb;border-color:#f0e6c8}
+    table.excel tbody td.cell-error{color:#c62828!important;font-weight:600}
+    table.excel.smart-table tbody tr:nth-child(even) td:not([style*="background"]){background:#edf7f0}
+    table.excel.smart-table tbody tr:nth-child(odd) td:not([style*="background"]){background:var(--surface)}
+    table.excel.smart-table thead tr:first-child th,table.excel.smart-table tbody tr:first-child td{
+      background:linear-gradient(180deg,#268052 0%,var(--xl-green-dark) 100%)!important;color:#fff!important;font-weight:600;text-align:center;
+    }
+    .cell-inline-input{
+      position:absolute;inset:0;width:100%;height:100%;box-sizing:border-box;border:none;outline:none;
+      padding:3px 6px;margin:0;font:inherit;font-size:12px;line-height:20px;background:#fff;color:var(--text);
+      caret-color:var(--xl-green);z-index:2;text-align:right;border-radius:0;-webkit-appearance:none;appearance:none;
+    }
+    .cell-inline-input:focus{border:none;outline:none;box-shadow:none;background:#fff}
+    .text-left .cell-inline-input{text-align:left}
+    .filter-arrow{display:inline-block;margin-left:4px;cursor:pointer;font-size:9px;opacity:.75;vertical-align:middle;padding:2px 4px;border-radius:3px;transition:opacity .15s,background .15s}
+    .filter-arrow:hover,.filter-arrow.active{opacity:1;background:rgba(255,255,255,.22)}
+    .filter-dropdown{
+      position:fixed;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);
+      box-shadow:var(--shadow-lg);padding:10px 12px;z-index:1500;min-width:200px;max-height:320px;overflow-y:auto;font-size:12px;
+    }
+    .filter-dropdown label{display:flex;align-items:center;gap:8px;padding:6px 6px;cursor:pointer;border-radius:var(--radius-sm);transition:background .12s}
+    .filter-dropdown label:hover{background:var(--xl-green-light)}
+    .filter-dropdown hr{margin:6px 0;border:none;border-top:1px solid var(--border)}
+    .filter-dropdown .filter-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+    .filter-dropdown .filter-actions button{
+      padding:6px 16px;font-size:12px;cursor:pointer;border:1px solid var(--xl-green);
+      background:var(--xl-green-light);border-radius:var(--radius-sm);font-family:inherit;font-weight:600;color:var(--xl-green-dark);
+    }
+    .filter-dropdown .filter-actions button.cancel-btn{background:var(--surface-muted);border-color:var(--border);color:var(--text-muted);font-weight:500}
+    .sheet-bar{
+      display:flex;align-items:flex-end;background:linear-gradient(180deg,#eef2ef 0%,#e4e9e6 100%);
+      border-top:1px solid var(--border);padding:4px 8px 0;
+    }
+    .sheet-tab{
+      padding:7px 16px 8px;font-size:12px;font-weight:500;border:1px solid var(--border);border-bottom:none;
+      background:var(--surface-muted);cursor:pointer;font-family:inherit;
+      border-radius:var(--radius-sm) var(--radius-sm) 0 0;margin-right:4px;color:var(--text-muted);
+      transition:background .15s,color .15s;
+    }
+    .sheet-tab.active{background:var(--surface);font-weight:600;color:var(--xl-green-dark);padding-bottom:9px;margin-bottom:-1px;border-color:var(--border-strong)}
+    .toast{
+      position:fixed;top:50%;left:50%;z-index:1200;max-width:min(92vw,440px);padding:14px 20px;
+      border-radius:var(--radius-md);font-size:13px;line-height:1.5;color:var(--text);
+      background:var(--surface);border:1px solid var(--border);
+      box-shadow:var(--shadow-lg);transform:translate(-50%,-50%) scale(.96) translateY(8px);
+      opacity:0;visibility:hidden;pointer-events:none;transition:.25s cubic-bezier(.2,.8,.2,1);
+    }
+    .toast.visible{transform:translate(-50%,-50%) scale(1) translateY(0);opacity:1;visibility:visible}
+    .modal-overlay{
+      position:fixed;inset:0;background:rgba(20,32,26,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+      z-index:1100;display:none;align-items:center;justify-content:center;padding:16px;
+    }
+    .modal-overlay.visible{display:flex}
+    .modal{
+      background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);
+      box-shadow:var(--shadow-lg);max-width:440px;width:100%;font-size:13px;overflow:hidden;
+      animation:modalIn .22s cubic-bezier(.2,.8,.2,1);
+    }
+    @keyframes modalIn{from{opacity:0;transform:scale(.97) translateY(8px)}to{opacity:1;transform:none}}
+    .modal-title{
+      padding:12px 16px;background:linear-gradient(180deg,var(--surface) 0%,var(--surface-muted) 100%);
+      border-bottom:1px solid var(--border);font-weight:600;font-size:14px;color:var(--text);
+    }
+    .modal-body{padding:16px 18px}
+    .modal-body label{display:block;margin-bottom:5px;font-size:12px;font-weight:500;color:var(--text-muted)}
+    .modal-body input[type=text],.modal-body select{
+      width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);
+      font-family:inherit;font-size:12px;margin-bottom:12px;background:var(--surface);color:var(--text);
+    }
+    .modal-body input:focus,.modal-body select:focus{outline:none;border-color:var(--xl-green);box-shadow:0 0 0 3px rgba(33,115,70,.1)}
+    .modal-body .modal-row{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+    .modal-body .modal-row input{margin:0}
+    .modal-footer{
+      padding:12px 16px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;
+      background:var(--surface-muted);
+    }
+    .modal-footer button{
+      padding:8px 18px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;
+      border-radius:var(--radius-sm);border:1px solid var(--xl-green);
+      background:linear-gradient(180deg,#f4fbf7 0%,var(--xl-green-light) 100%);color:var(--xl-green-dark);
+      transition:transform .1s,box-shadow .15s;
+    }
+    .modal-footer button:hover{box-shadow:0 2px 8px rgba(33,115,70,.15)}
+    .modal-footer button.secondary{background:var(--surface);border-color:var(--border);color:var(--text-muted);font-weight:500}
+    .kbd-hint{font-size:11px;color:var(--text-soft);margin-top:8px;line-height:1.45}
+    .error-indicator{position:absolute;top:3px;left:3px;width:7px;height:7px;background:#ef5350;border-radius:50%;pointer-events:none;box-shadow:0 0 0 2px rgba(239,83,80,.25)}
+    .row-context-menu{
+      position:fixed;z-index:1600;background:var(--surface);border:1px solid var(--border);
+      border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);padding:4px 0;min-width:148px;font-size:12px;
+    }
+    .row-context-menu button{
+      display:block;width:100%;padding:8px 16px;border:none;background:transparent;text-align:left;
+      font-family:inherit;font-size:12px;cursor:pointer;color:var(--text);transition:background .12s;
+    }
+    .row-context-menu button:hover{background:var(--xl-green-light);color:var(--xl-green-dark)}
+    @media (max-width:768px){
+      .app-header h1{font-size:.95rem}
+      .formula-input,.cell-inline-input,.name-box{font-size:16px!important}
+      table.excel th,table.excel td{height:32px}
+      .ribbon-tabs button{padding:6px 10px;font-size:11px}
+      .ribbon-panel{padding:6px 8px;min-height:0}
+      .rb{padding:6px 8px;font-size:11px}
+      .excel-shell{border-radius:var(--radius-md)}
+    }
   </style>
 </head>
 <body>
+  <header class="app-header">
+    <h1>Подготовка данных для сводной таблицы</h1>
+  </header>
   <div class="task-banner" id="taskBanner"><p id="taskText"></p></div>
   <div class="excel-shell">
-    <div class="title-bar"><div class="quick-access"><button type="button" id="btnUndo" title="Отменить (Ctrl+Z)">↶</button></div><div class="doc-title">Реестр премий — Excel (тренажёр: подготовка данных)</div></div>
+    <div class="title-bar">
+      <div class="quick-access">
+        <button type="button" id="btnUndo" title="Отменить (Ctrl+Z)" aria-label="Отменить">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.5 8a4.5 4.5 0 0 1 8-2.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3.5 5.5V8h2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="doc-title">Реестр премий.xlsx</div>
+    </div>
     <div class="ribbon-wrap">
       <div class="ribbon-tabs" id="ribbonTabs">
         <button type="button" class="active" data-tab="home">Главная</button>
@@ -56,8 +336,9 @@
 <script src="artem-assistant.js"></script>
 <script>
 (function(){
-  const COLS=7, ROWS=14, DATA_ROW_START=1, DATA_ROW_END=11;
+  const COLS=7, ROWS=12, DATA_ROW_START=1, DATA_ROW_END=11;
   const EMPTY_ROW=4;
+  const SAVE_KEY='svd-pivot-trainer-v2';
   const EXCEL_ERRORS=['#DIV/0!','#VALUE!','#REF!','#NAME?','#NUM!','#N/A'];
   const colLabel=i=>String.fromCharCode(65+i);
   const cellKey=(r,c)=>r+','+c;
@@ -79,7 +360,8 @@
   let undoStack=[], mergedRegions=[{r:2,c:0,rs:2,cs:1,value:'Санкт-Петербург'}];
   let deletedRows=new Set(), hiddenRows=new Set();
   let filterAppliedCol=null, filterAppliedValues=null;
-  let activeSheetIndex=0, lastTouchCell=null, lastTouchTime=0, contextMenuEl=null;
+  let activeSheetIndex=0, lastTouchCell=null, lastTouchTime=0, contextMenuEl=null, ribbonMenuEl=null, syncingRibbon=false;
+  let restoredFromSave=false, saveDebounce=null;
 
   function emptyRows(){return Array.from({length:ROWS},()=>Array.from({length:COLS},()=>''));}
   function buildInitialRows(){
@@ -124,7 +406,7 @@
     {id:'smart_table',text:'Реестр готов! Превратите диапазон данных в <b>«Умную таблицу»</b> Excel — так сводная будет обновляться автоматически.',check(){return isSmartTable;}}
   ];
   const COMPLETE='Отлично! Вы подготовили реестр к сводной таблице: заголовки, чистые строки, без объединений, единый тип данных, единое написание категорий и «Умная таблица».';
-  const ARTEM_HINTS=['Кликни пустую ячейку заголовка над столбцом с суммами и введи любое понятное название — например «Премия» или «Сумма, руб.». Главное, чтобы оно не совпадало с другими заголовками строки.','Вкладка «Главная» → «Отменить объединение ячеек». Или Ctrl+A, потом кнопка на ленте. Объединённые ячейки — главная ловушка!','Найди пустую строку внутри таблицы и удали её. Можно через Ctrl+G → «Пустые ячейки», или правый клик по номеру строки → «Удалить».','На вкладке «Главная» нажми «Найти и заменить» (или Ctrl+H — на Mac только Ctrl, не Cmd!). Найди «каско», замени на «КАСКО», «Заменить все».','Найди «пока не выплачено» и замени на 0. Потом выдели столбец E и Ctrl+1 → «Числовой». Один столбец — один тип данных!','G1 — «Вид (чистый)». G2 — =СЖПРОБЕЛЫ(B2). Выдели G2:G12 и Ctrl+Enter — формула скопируется во все ячейки.','Ctrl+Shift+L включит фильтр. Стрелка ▼ в заголовке B покажет уникальные значения — проверь, что дубликатов написания нет.','Ctrl+A, потом Ctrl+T. Галочка «Таблица с заголовками» — и OK. Зелёная «зебра» и авто-расширение — это Умная таблица!'];
+  const ARTEM_HINTS=['Кликни пустую ячейку заголовка над столбцом с суммами и введи любое понятное название — например «Премия» или «Сумма, руб.». Главное, чтобы оно не совпадало с другими заголовками строки.','На вкладке «Главная» у кнопки «Объединить и поместить в центре» открой меню (стрелка справа) → «Отменить объединение ячеек».','Найди пустую строку внутри таблицы и удали её. Можно через Ctrl+G → «Пустые ячейки», или правый клик по номеру строки → «Удалить».','На вкладке «Главная» у «Найти и выделить» открой меню → «Заменить» (или Ctrl+H). Найди «каско», замени на «КАСКО», «Заменить все».','Сначала замени «пока не выплачено» на 0. Потом выдели столбец с суммами и на вкладке «Главная» в группе «Число» выбери «Числовой» в списке форматов (или кнопку .00).','G1 — «Вид (чистый)». G2 — =СЖПРОБЕЛЫ(B2). Выдели G2:G12 и Ctrl+Enter — формула скопируется во все ячейки.','Ctrl+Shift+L включит фильтр. Стрелка ▼ в заголовке B покажет уникальные значения — проверь, что дубликатов написания нет.','Ctrl+A, потом Ctrl+T. Галочка «Таблица с заголовками» — и OK. Зелёная «зебра» и авто-расширение — это Умная таблица!'];
 
   function isRowDeleted(r){return deletedRows.has(r);}
   function isRowHidden(r){return hiddenRows.has(r);}
@@ -143,6 +425,9 @@
     mergedRegions=s.merged;deletedRows=new Set(s.deleted);hiddenRows=new Set(s.hidden||[]);
     filterEnabled=s.filter;filterAppliedCol=s.filterCol;filterAppliedValues=s.filterVals?new Set(s.filterVals):null;isSmartTable=s.smart;
   }
+  function saveProgress(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:2,functionStep,state:snapshotState()}));}catch(e){}}
+  function scheduleSave(){clearTimeout(saveDebounce);saveDebounce=setTimeout(saveProgress,300);}
+  function loadProgress(){try{const raw=localStorage.getItem(SAVE_KEY);if(!raw)return false;const data=JSON.parse(raw);if(data.v!==2||!data.state||!Array.isArray(data.state.rows))return false;restoreState(data.state);sheet().rows=sheet().rows.slice(0,ROWS).map(row=>row.slice(0,COLS));functionStep=Math.max(0,Math.min(TASKS.length,Number(data.functionStep)||0));restoredFromSave=true;return true;}catch(e){return false;}}
   function pushUndo(){undoStack.push(snapshotState());if(undoStack.length>30)undoStack.shift();}
   function undo(){if(!undoStack.length){showToast('Нечего отменять.');return;}restoreState(undoStack.pop());closeFilterDropdown();renderGrid();checkProgress();showToast('Последнее действие отменено (Ctrl+Z).');}
   function isFormulaValue(v){return typeof v==='string'&&v.trim().charAt(0)==='=';}
@@ -191,6 +476,13 @@
   function getMergeAt(r,c){return mergedRegions.find(m=>r>=m.r&&r<m.r+m.rs&&c>=m.c&&c<m.c+m.cs)||null;}
   function isHiddenByMerge(r,c){const m=getMergeAt(r,c);return m&&!(m.r===r&&m.c===c);}
   function unmergeAll(){if(!mergedRegions.length){showToast('Объединённых ячеек не найдено.');return;}pushUndo();mergedRegions.forEach(m=>{sheet().rows[m.r][m.c]=m.value;for(let dr=1;dr<m.rs;dr++)for(let dc=0;dc<m.cs;dc++)sheet().rows[m.r+dr][m.c+dc]='';});mergedRegions=[];renderGrid();checkProgress();showToast('Объединение ячеек отменено.');}
+  function getActiveRange(){return selRange?{r0:selRange.r0,r1:selRange.r1,c0:selRange.c0,c1:selRange.c1}:{r0:selR,r1:selR,c0:selC,c1:selC};}
+  function mergeRange(center){const range=getActiveRange();if(range.r0===range.r1&&range.c0===range.c1){showToast('Выделите несколько ячеек для объединения.');return;}pushUndo();const remove=mergedRegions.filter(m=>!(m.r+m.rs-1<range.r0||m.r>range.r1||m.c+m.cs-1<range.c0||m.c>range.c1));remove.forEach(m=>{sheet().rows[m.r][m.c]=m.value;for(let dr=0;dr<m.rs;dr++)for(let dc=0;dc<m.cs;dc++)if(dr||dc)sheet().rows[m.r+dr][m.c+dc]='';});mergedRegions=mergedRegions.filter(m=>!remove.includes(m));const value=getRawCell(sheet(),range.r0,range.c0);mergedRegions.push({r:range.r0,c:range.c0,rs:range.r1-range.r0+1,cs:range.c1-range.c0+1,value});for(let r=range.r0;r<=range.r1;r++)for(let c=range.c0;c<=range.c1;c++)if(r!==range.r0||c!==range.c0)sheet().rows[r][c]='';sheet().rows[range.r0][range.c0]=value;if(center){const k=cellKey(range.r0,range.c0);if(!sheet().styles[k])sheet().styles[k]={};sheet().styles[k].alignCenter=true;}renderGrid();checkProgress();showToast(center?'Ячейки объединены и выровнены по центру.':'Ячейки объединены.');}
+  function mergeAndCenter(){mergeRange(true);}
+  function mergeCellsOnly(){mergeRange(false);}
+  function selectBlankCells(){const blanks=[];const u=getUsedRange();for(let r=u.r0;r<=u.r1;r++){if(isRowDeleted(r))continue;for(let c=u.c0;c<=u.c1;c++){if(isHiddenByMerge(r,c))continue;if(String(getRawCell(sheet(),r,c)).trim()==='')blanks.push({r,c});}}if(!blanks.length){showToast('Пустых ячеек не найдено.');return;}const rs=blanks.map(b=>b.r),cs=blanks.map(b=>b.c);setSelection(Math.min(...rs),Math.min(...cs),Math.max(...rs),Math.max(...cs));selR=blanks[0].r;selC=blanks[0].c;renderGrid();showToast('Выделено пустых ячеек: '+blanks.length+'.');}
+  function closeRibbonMenu(){if(ribbonMenuEl){ribbonMenuEl.remove();ribbonMenuEl=null;}}
+  function showRibbonMenu(anchorEl,items){closeRibbonMenu();closeContextMenu();closeFilterDropdown();const menu=document.createElement('div');menu.className='ribbon-menu';items.forEach(item=>{if(item==='hr'){menu.appendChild(document.createElement('hr'));return;}const btn=document.createElement('button');btn.type='button';btn.textContent=item.label;btn.addEventListener('click',()=>{closeRibbonMenu();item.action();});menu.appendChild(btn);});document.body.appendChild(menu);ribbonMenuEl=menu;const rect=anchorEl.getBoundingClientRect();menu.style.top=(rect.bottom+2)+'px';menu.style.left=Math.min(rect.left,window.innerWidth-menu.offsetWidth-8)+'px';setTimeout(()=>document.addEventListener('mousedown',outsideRibbonMenu,{once:true}),0);function outsideRibbonMenu(e){if(menu.contains(e.target)||anchorEl.contains(e.target))return;closeRibbonMenu();}}
   function getUsedRange(){let r1=0,c1=0,r0=ROWS-1,c0=COLS-1;for(let r=0;r<ROWS;r++)if(!isRowDeleted(r)&&!isRowHidden(r)){r0=Math.min(r0,r);r1=Math.max(r1,r);}for(let c=0;c<COLS;c++){for(let r=0;r<ROWS;r++){if(isRowDeleted(r)||isRowHidden(r))continue;if(String(getRawCell(sheet(),r,c)).trim()!==''){c0=Math.min(c0,c);c1=Math.max(c1,c);break;}}}return{r0,c0,r1,c1};}
   function rangeRef(){const u=getUsedRange();return rcToRef(u.r0,u.c0)+':'+rcToRef(u.r1,u.c1);}
   function clearSelRange(){selRange=null;}
@@ -208,20 +500,24 @@
   function getUniqueColumnValues(col){const vals=new Set();for(let r=DATA_ROW_START;r<=DATA_ROW_END;r++){if(isRowDeleted(r))continue;const disp=formatCellDisplay(sheet(),r,col);const v=String(disp).trim();if(v||getRawCell(sheet(),r,col)!=='')vals.add(v||'(пусто)');}return[...vals].sort((a,b)=>a.localeCompare(b,'ru'));}
   function applyColumnFilter(col,selected){pushUndo();filterAppliedCol=col;filterAppliedValues=new Set(selected);hiddenRows.clear();for(let r=DATA_ROW_START;r<=DATA_ROW_END;r++){if(isRowDeleted(r))continue;const disp=formatCellDisplay(sheet(),r,col);const v=String(disp).trim()||'(пусто)';if(!filterAppliedValues.has(v))hiddenRows.add(r);}renderGrid();checkProgress();}
   function showFilterDropdown(col,evt){if(!filterEnabled)return;closeFilterDropdown();const vals=getUniqueColumnValues(col);const dd=document.createElement('div');dd.className='filter-dropdown';const selected=filterAppliedCol===col&&filterAppliedValues?new Set(filterAppliedValues):new Set(vals);const allLbl=document.createElement('label');const allCb=document.createElement('input');allCb.type='checkbox';allCb.checked=selected.size===vals.length;allLbl.appendChild(allCb);allLbl.appendChild(document.createTextNode(' (Выбрать все)'));dd.appendChild(allLbl);dd.appendChild(document.createElement('hr'));const cbs=[];vals.forEach(v=>{const lbl=document.createElement('label');const cb=document.createElement('input');cb.type='checkbox';cb.value=v;cb.checked=selected.has(v);lbl.appendChild(cb);lbl.appendChild(document.createTextNode(' '+v));dd.appendChild(lbl);cbs.push(cb);});allCb.addEventListener('change',()=>cbs.forEach(cb=>cb.checked=allCb.checked));const actions=document.createElement('div');actions.className='filter-actions';const ok=document.createElement('button');ok.textContent='OK';const cancel=document.createElement('button');cancel.textContent='Отмена';cancel.className='cancel-btn';actions.appendChild(cancel);actions.appendChild(ok);dd.appendChild(actions);document.body.appendChild(dd);filterDropdownEl=dd;const rect=evt.target.getBoundingClientRect();dd.style.top=(rect.bottom+2)+'px';dd.style.left=Math.min(rect.left,window.innerWidth-dd.offsetWidth-8)+'px';ok.addEventListener('click',()=>{const chosen=cbs.filter(cb=>cb.checked).map(cb=>cb.value);if(!chosen.length){showToast('Нужно выбрать хотя бы одно значение.');return;}applyColumnFilter(col,chosen);closeFilterDropdown();});cancel.addEventListener('click',closeFilterDropdown);setTimeout(()=>document.addEventListener('mousedown',outsideFilter,{once:true}),0);function outsideFilter(e){if(dd.contains(e.target)||e.target.classList.contains('filter-arrow'))return;closeFilterDropdown();}checkProgress();}
-  function renderGrid(){grid.innerHTML='';if(isSmartTable)grid.classList.add('smart-table');else grid.classList.remove('smart-table');const sh=sheet();const thead=document.createElement('thead'),hr=document.createElement('tr');const corner=document.createElement('th');corner.className='corner';hr.appendChild(corner);for(let c=0;c<COLS;c++){const th=document.createElement('th');th.className='col-header';th.dataset.c=c;th.textContent=colLabel(c);if(isFullColSelected(c))th.classList.add('header-selected');hr.appendChild(th);}thead.appendChild(hr);grid.appendChild(thead);const tbody=document.createElement('tbody');let displayRowNum=1;for(let r=0;r<ROWS;r++){if(isRowDeleted(r)||isRowHidden(r))continue;const tr=document.createElement('tr');const th=document.createElement('th');th.className='row-header';th.dataset.r=r;th.textContent=displayRowNum++;if(isFullRowSelected(r))th.classList.add('header-selected');tr.appendChild(th);for(let c=0;c<COLS;c++){if(isHiddenByMerge(r,c))continue;const td=document.createElement('td');td.dataset.r=r;td.dataset.c=c;const merge=getMergeAt(r,c);if(merge&&merge.r===r&&merge.c===c){if(merge.rs>1)td.rowSpan=merge.rs;if(merge.cs>1)td.colSpan=merge.cs;td.classList.add('merged-cell');}const display=formatCellDisplay(sh,r,c);td.textContent=display;if(isExcelError(display))td.classList.add('cell-error');const v=getRawCell(sh,r,c);if(r===0||c===1||c===2||c===5||c===6||typeof v==='string'&&!isFormulaValue(v)&&isNaN(parseFloat(v)))td.classList.add('text-left');const st=sh.styles[cellKey(r,c)]||{};if(st.bold)td.style.fontWeight='bold';if(st.italic)td.style.fontStyle='italic';if(st.underline)td.style.textDecoration='underline';if(isInSelection(r,c))td.classList.add('range-selected');if(editR===r&&editC===c)td.classList.add('editing-cell');else if(r===selR&&c===selC&&(!selRange||selRange.r0===selRange.r1&&selRange.c0===selRange.c1))td.classList.add('range-active');if(r>0&&c===4&&typeof v==='string'&&!isFormulaValue(v)&&isNaN(parseFloat(String(v).replace(/\s/g,'')))){const ind=document.createElement('span');ind.className='error-indicator';ind.title='Текст в числовом столбце';td.appendChild(ind);}if(r===0&&filterEnabled){const arrow=document.createElement('span');arrow.className='filter-arrow'+(filterAppliedCol===c?' active':'');arrow.textContent='▼';arrow.addEventListener('mousedown',e=>{e.preventDefault();e.stopPropagation();showFilterDropdown(c,e);});td.appendChild(arrow);}tr.appendChild(td);}tbody.appendChild(tr);}grid.appendChild(tbody);syncFormulaBar();renderSheetBar();}
+  function renderGrid(){grid.innerHTML='';if(isSmartTable)grid.classList.add('smart-table');else grid.classList.remove('smart-table');const sh=sheet();const cg=document.createElement('colgroup');const colRh=document.createElement('col');colRh.className='col-rowhead';cg.appendChild(colRh);for(let ci=0;ci<COLS;ci++){const col=document.createElement('col');col.className='col-data';cg.appendChild(col);}grid.appendChild(cg);const thead=document.createElement('thead'),hr=document.createElement('tr');const corner=document.createElement('th');corner.className='corner';hr.appendChild(corner);for(let c=0;c<COLS;c++){const th=document.createElement('th');th.className='col-header';th.dataset.c=c;th.textContent=colLabel(c);if(isFullColSelected(c))th.classList.add('header-selected');hr.appendChild(th);}thead.appendChild(hr);grid.appendChild(thead);const tbody=document.createElement('tbody');let displayRowNum=1;for(let r=0;r<ROWS;r++){if(isRowDeleted(r)||isRowHidden(r))continue;const tr=document.createElement('tr');const th=document.createElement('th');th.className='row-header';th.dataset.r=r;th.textContent=displayRowNum++;if(isFullRowSelected(r))th.classList.add('header-selected');tr.appendChild(th);for(let c=0;c<COLS;c++){if(isHiddenByMerge(r,c))continue;const td=document.createElement('td');td.dataset.r=r;td.dataset.c=c;const merge=getMergeAt(r,c);if(merge&&merge.r===r&&merge.c===c){if(merge.rs>1)td.rowSpan=merge.rs;if(merge.cs>1)td.colSpan=merge.cs;td.classList.add('merged-cell');}const display=formatCellDisplay(sh,r,c);td.textContent=display;if(isExcelError(display))td.classList.add('cell-error');const v=getRawCell(sh,r,c);const st=sh.styles[cellKey(r,c)]||{};if(st.alignCenter)td.style.textAlign='center';else if(r===0||c===1||c===2||c===5||c===6||typeof v==='string'&&!isFormulaValue(v)&&isNaN(parseFloat(v)))td.classList.add('text-left');if(st.bold)td.style.fontWeight='bold';if(st.italic)td.style.fontStyle='italic';if(st.underline)td.style.textDecoration='underline';if(isInSelection(r,c))td.classList.add('range-selected');if(editR===r&&editC===c)td.classList.add('editing-cell');else if(r===selR&&c===selC&&(!selRange||selRange.r0===selRange.r1&&selRange.c0===selRange.c1))td.classList.add('range-active');if(r>0&&c===4&&typeof v==='string'&&!isFormulaValue(v)&&isNaN(parseFloat(String(v).replace(/\s/g,'')))){const ind=document.createElement('span');ind.className='error-indicator';ind.title='Текст в числовом столбце';td.appendChild(ind);}if(r===0&&filterEnabled){const arrow=document.createElement('span');arrow.className='filter-arrow'+(filterAppliedCol===c?' active':'');arrow.textContent='▼';arrow.addEventListener('mousedown',e=>{e.preventDefault();e.stopPropagation();showFilterDropdown(c,e);});td.appendChild(arrow);}tr.appendChild(td);}tbody.appendChild(tr);}grid.appendChild(tbody);syncFormulaBar();renderSheetBar();scheduleSave();}
   function renderSheetBar(){sheetBar.innerHTML='';sheets.forEach((s,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='sheet-tab'+(i===activeSheetIndex?' active':'');btn.textContent=s.name;sheetBar.appendChild(btn);});}
-  function syncFormulaBar(){nameBox.value=rcToRef(selR,selC);if(!cellEditorInput)formulaInput.value=rawToFormulaString(sheet(),selR,selC);}
+  function getSelectedCells(){if(selRange){const cells=[];for(let r=selRange.r0;r<=selRange.r1;r++)for(let c=selRange.c0;c<=selRange.c1;c++)cells.push({r,c});return cells;}return[{r:selR,c:selC}];}
+  function getSelectionFormat(){const cells=getSelectedCells();if(!cells.length)return'general';const fmts=cells.map(({r,c})=>sheet().formats[cellKey(r,c)]||'general');return fmts.every(f=>f===fmts[0])?fmts[0]:'general';}
+  function applyCellFormat(fmt){pushUndo();getSelectedCells().forEach(({r,c})=>{sheet().formats[cellKey(r,c)]=fmt;});if(fmt==='number'){getSelectedCells().forEach(({r,c})=>{if(r<DATA_ROW_START||r>DATA_ROW_END||isRowDeleted(r))return;const v=sheet().rows[r][c];if(typeof v==='string'&&!isFormulaValue(v)){const n=parseFloat(String(v).replace(/\s/g,'').replace(',','.'));if(!isNaN(n))sheet().rows[r][c]=n;}});}renderGrid();checkProgress();}
+  function syncRibbonControls(){const fmtEl=document.getElementById('fmtSelect');if(!fmtEl)return;syncingRibbon=true;fmtEl.value=getSelectionFormat();syncingRibbon=false;}
+  function syncFormulaBar(){nameBox.value=rcToRef(selR,selC);if(!cellEditorInput)formulaInput.value=rawToFormulaString(sheet(),selR,selC);syncRibbonControls();}
   function commitValue(value,targetR,targetC){const r=targetR!==undefined?targetR:(editR!==null?editR:selR);const c=targetC!==undefined?targetC:(editC!==null?editC:selC);const prev=getRawCell(sheet(),r,c);const next=normalizeInput(value);if(cellValuesEqual(prev,next)){cellEditorInput=null;editR=editC=null;renderGrid();return;}pushUndo();sheet().rows[r][c]=next;cellEditorInput=null;editR=editC=null;renderGrid();checkProgress();}
   function cancelEditor(){cellEditorInput=null;editR=editC=null;renderGrid();}
   function startCellEditor(r,c,initial,replace){if(artemBlocksInput()||isModalOpen())return;if(cellEditorInput&&editR===r&&editC===c)return;if(cellEditorInput)commitValue(cellEditorInput.value);selR=r;selC=c;clearSelRange();editR=r;editC=c;renderGrid();const td=grid.querySelector('td[data-r="'+r+'"][data-c="'+c+'"]');if(!td)return;td.classList.add('editing-cell');const inp=document.createElement('input');inp.type='text';inp.className='cell-inline-input';const base=initial!==undefined?String(initial):rawToFormulaString(sheet(),r,c);inp.value=base;td.textContent='';td.appendChild(inp);cellEditorInput=inp;formulaInput.value=inp.value;inp.addEventListener('input',()=>{formulaInput.value=inp.value;});inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();commitValue(inp.value);}else if(e.key==='Escape'){e.preventDefault();cancelEditor();}});inp.addEventListener('blur',()=>{if(cellEditorInput===inp)commitValue(inp.value);});const focusInput=()=>{if(cellEditorInput!==inp||!document.body.contains(inp))return;inp.focus({preventScroll:true});if(replace||initial!==undefined){inp.setSelectionRange(inp.value.length,inp.value.length);}else{inp.select();}};requestAnimationFrame(()=>requestAnimationFrame(focusInput));setTimeout(focusInput,0);}
   function toggleCellStyle(prop){pushUndo();const apply=(r,c)=>{const k=cellKey(r,c);if(!sheet().styles[k])sheet().styles[k]={};sheet().styles[k][prop]=!sheet().styles[k][prop];};if(selRange){for(let r=selRange.r0;r<=selRange.r1;r++)for(let c=selRange.c0;c<=selRange.c1;c++)apply(r,c);}else apply(selR,selC);renderGrid();}
-  function applyFmtSelect(val){pushUndo();const apply=(r,c)=>sheet().formats[cellKey(r,c)]=val;if(selRange){for(let r=selRange.r0;r<=selRange.r1;r++)for(let c=selRange.c0;c<=selRange.c1;c++)apply(r,c);}else apply(selR,selC);renderGrid();}
+  function applyFmtSelect(val){applyCellFormat(val);const labels={general:'Общий',number:'Числовой',date:'Дата',text:'Текстовый'};showToast('Формат ячеек: '+(labels[val]||val)+'.');}
   function insertFxFormula(formula){pushUndo();sheet().rows[selR][selC]=formula;renderGrid();checkProgress();}
   function sortData(asc){const col=selC;pushUndo();const rows=[];for(let r=DATA_ROW_START;r<=DATA_ROW_END;r++)if(!isRowDeleted(r)&&!isRowHidden(r))rows.push(r);rows.sort((ra,rb)=>{let va=getCellComputed(sheet(),ra,col),vb=getCellComputed(sheet(),rb,col);const na=typeof va==='number',nb=typeof vb==='number';if(na&&nb)return asc?va-vb:vb-va;va=String(va).toLowerCase();vb=String(vb).toLowerCase();if(va<vb)return asc?-1:1;if(va>vb)return asc?1:-1;return 0;});const data=rows.map(r=>[...sheet().rows[r]]);const fmts=rows.map(r=>COLS.map(c=>sheet().formats[cellKey(r,c)]));const styles=rows.map(r=>COLS.map(c=>sheet().styles[cellKey(r,c)]));rows.forEach((r,i)=>{sheet().rows[r]=data[i];COLS.forEach((_,c)=>{const fk=cellKey(r,c);if(fmts[i][c])sheet().formats[fk]=fmts[i][c];else delete sheet().formats[fk];if(styles[i][c])sheet().styles[fk]=styles[i][c];else delete sheet().styles[fk];});});renderGrid();showToast(asc?'Сортировка A→Z по столбцу '+colLabel(col)+'.':'Сортировка Z→A по столбцу '+colLabel(col)+'.');}
   function removeDuplicates(){pushUndo();const seen=new Set();let removed=0;for(let r=DATA_ROW_END;r>=DATA_ROW_START;r--){if(isRowDeleted(r))continue;const key=COLS.map(c=>String(getRawCell(sheet(),r,c))).join('|');if(seen.has(key)){deletedRows.add(r);removed++;}else seen.add(key);}renderGrid();checkProgress();showToast(removed?'Удалено дубликатов: '+removed+'.':'Дубликаты не найдены.');}
 
   grid.addEventListener('contextmenu',e=>{if(artemBlocksInput()||isModalOpen())return;const rowH=e.target.closest&&e.target.closest('tbody th.row-header');if(rowH){showRowContextMenu(e,Number(rowH.dataset.r));return;}closeContextMenu();});
-  grid.addEventListener('mousedown',e=>{if(artemBlocksInput()||isModalOpen())return;if(e.target.classList.contains('cell-inline-input'))return;closeContextMenu();const rowH=e.target.closest&&e.target.closest('tbody th.row-header');if(rowH){e.preventDefault();selectRow(Number(rowH.dataset.r));return;}const colH=e.target.closest&&e.target.closest('thead th.col-header');if(colH){e.preventDefault();selectColumn(Number(colH.dataset.c));return;}const td=e.target.closest&&e.target.closest('td');if(!td||e.target.classList.contains('filter-arrow'))return;e.preventDefault();const r=Number(td.dataset.r),c=Number(td.dataset.c);if(e.shiftKey&&selR!==null){setSelection(selR,selC,r,c);selR=r;selC=c;editR=editC=null;renderGrid();return;}startCellEditor(r,c);});
+  grid.addEventListener('mousedown',e=>{if(artemBlocksInput()||isModalOpen())return;if(e.target.classList.contains('cell-inline-input'))return;closeContextMenu();closeRibbonMenu();const rowH=e.target.closest&&e.target.closest('tbody th.row-header');if(rowH){e.preventDefault();selectRow(Number(rowH.dataset.r));return;}const colH=e.target.closest&&e.target.closest('thead th.col-header');if(colH){e.preventDefault();selectColumn(Number(colH.dataset.c));return;}const td=e.target.closest&&e.target.closest('td');if(!td||e.target.classList.contains('filter-arrow'))return;e.preventDefault();const r=Number(td.dataset.r),c=Number(td.dataset.c);if(e.shiftKey&&selR!==null){setSelection(selR,selC,r,c);selR=r;selC=c;editR=editC=null;renderGrid();return;}startCellEditor(r,c);});
   grid.addEventListener('dblclick',e=>{if(artemBlocksInput()||isModalOpen())return;const td=e.target.closest&&e.target.closest('td');if(!td||e.target.classList.contains('filter-arrow'))return;e.preventDefault();startCellEditor(Number(td.dataset.r),Number(td.dataset.c));});
   grid.addEventListener('touchstart',e=>{if(artemBlocksInput()||isModalOpen())return;const td=e.target.closest&&e.target.closest('td');if(!td||e.target.classList.contains('filter-arrow'))return;const r=Number(td.dataset.r),c=Number(td.dataset.c);const now=Date.now();if(lastTouchCell&&lastTouchCell.r===r&&lastTouchCell.c===c&&now-lastTouchTime<350){e.preventDefault();startCellEditor(r,c);lastTouchCell=null;return;}lastTouchCell={r,c};lastTouchTime=now;selectCell(r,c);},{passive:false});
   formulaInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();commitValue(formulaInput.value);}});
@@ -242,21 +538,23 @@
   document.getElementById('replaceAll').addEventListener('click',()=>{const find=document.getElementById('replaceFind').value;const repl=document.getElementById('replaceWith').value;if(!find){showToast('Укажите, что искать.');return;}pushUndo();let count=0;const u=getUsedRange();for(let r=u.r0;r<=u.r1;r++){if(isRowDeleted(r))continue;for(let c=u.c0;c<=u.c1;c++){const raw=getRawCell(sheet(),r,c);if(typeof raw==='string'&&!isFormulaValue(raw)){const re=new RegExp(find.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');if(re.test(raw)){sheet().rows[r][c]=raw.replace(re,repl);count++;}}}}closeModal('modalReplace');renderGrid();checkProgress();showToast('Заменено ячеек: '+count+'.');});
   function openDeleteCells(){openModal('modalDelete');}
   document.getElementById('deleteOk').addEventListener('click',()=>{const mode=document.querySelector('input[name="deleteMode"]:checked').value;pushUndo();if(mode==='row'&&selRange){const rowsToDelete=new Set();for(let r=selRange.r0;r<=selRange.r1;r++){let empty=true;for(let c=0;c<COLS;c++){if(String(getRawCell(sheet(),r,c)).trim()!==''){empty=false;break;}}if(empty||r===EMPTY_ROW)rowsToDelete.add(r);}if(!rowsToDelete.size)for(let r=selRange.r0;r<=selRange.r1;r++)rowsToDelete.add(r);rowsToDelete.forEach(r=>deletedRows.add(r));showToast('Удалено строк: '+rowsToDelete.size+'.');}else if(selRange){for(let r=selRange.r0;r<=selRange.r1;r++){if(isRowDeleted(r))continue;for(let c=selRange.c0;c<=selRange.c1;c++){if(String(getRawCell(sheet(),r,c)).trim()===''){deletedRows.add(r);break;}}}showToast('Пустые строки удалены.');}closeModal('modalDelete');clearSelRange();renderGrid();checkProgress();});
-  function openFormatCells(){document.getElementById('formatSelect').value=sheet().formats[cellKey(selR,selC)]||'general';openModal('modalFormat');}
-  document.getElementById('formatOk').addEventListener('click',()=>{pushUndo();const fmt=document.getElementById('formatSelect').value;if(selRange){for(let r=selRange.r0;r<=selRange.r1;r++)for(let c=selRange.c0;c<=selRange.c1;c++)sheet().formats[cellKey(r,c)]=fmt;}else sheet().formats[cellKey(selR,selC)]=fmt;if(fmt==='number'){const cols=selRange?[...Array(selRange.c1-selRange.c0+1)].map((_,i)=>selRange.c0+i):[selC];cols.forEach(c=>{for(let r=DATA_ROW_START;r<=DATA_ROW_END;r++){if(isRowDeleted(r))continue;const v=sheet().rows[r][c];if(typeof v==='string'&&!isFormulaValue(v)){const n=parseFloat(String(v).replace(/\s/g,'').replace(',','.'));if(!isNaN(n))sheet().rows[r][c]=n;}}});}closeModal('modalFormat');renderGrid();checkProgress();showToast('Формат применён (Ctrl+1).');});
+  function openFormatCells(){document.getElementById('formatSelect').value=getSelectionFormat();openModal('modalFormat');}
+  document.getElementById('formatOk').addEventListener('click',()=>{const fmt=document.getElementById('formatSelect').value;applyCellFormat(fmt);closeModal('modalFormat');showToast('Формат применён (Ctrl+1).');});
   function openCreateTable(){document.getElementById('tableRange').value=rangeRef();openModal('modalTable');}
   document.getElementById('tableOk').addEventListener('click',()=>{if(!document.getElementById('tableHeaders').checked){showToast('Для сводной таблицы нужны заголовки!');return;}pushUndo();isSmartTable=true;closeModal('modalTable');renderGrid();checkProgress();showToast('Диапазон превращён в Умную таблицу (Ctrl+T)! 🦓✨');});
   function toggleFilter(){filterEnabled=!filterEnabled;if(!filterEnabled){hiddenRows.clear();filterAppliedCol=null;filterAppliedValues=null;}renderGrid();checkProgress();if(ribbonTabs.querySelector('[data-tab="data"]').classList.contains('active'))switchRibbonTab('data');showToast(filterEnabled?'Фильтр включён (Ctrl+Shift+L). Кликните ▼ в заголовке.':'Фильтр отключён.');}
   function fillSelection(){if(!selRange)return;const srcRaw=getRawCell(sheet(),selRange.r0,selRange.c0);if(!isFormulaValue(srcRaw)){showToast('Ctrl+Enter: выделите ячейки с формулой в первой строке диапазона.');return;}pushUndo();for(let r=selRange.r0;r<=selRange.r1;r++)for(let c=selRange.c0;c<=selRange.c1;c++){if(r===selRange.r0&&c===selRange.c0)continue;const body=String(srcRaw).slice(1);const adjusted=body.replace(/([A-Z]+)(\d+)/gi,(m,col,row)=>{const srcRef=refToRC(col+row);if(!srcRef)return m;const dr=r-srcRef.r,dc=c-srcRef.c;let nc=0;for(let i=0;i<col.length;i++)nc=nc*26+(col.charCodeAt(i)-64);nc+=dc;return colIndexToLabel(nc)+(Number(row)+dr);});sheet().rows[r][c]='='+adjusted;}renderGrid();checkProgress();showToast('Формула заполнена во все выделенные ячейки (Ctrl+Enter).');}
-  function handleShortcutKey(e){if(artemBlocksInput())return;if(cellEditorInput&&!(e.ctrlKey||e.metaKey)&&e.key!=='Escape')return;if(isModalOpen()&&e.key!=='Escape')return;if(e.key==='Escape'){closeAllModals();closeFilterDropdown();closeContextMenu();return;}const k=e.key.toLowerCase();if(e.ctrlKey&&!e.metaKey&&!e.altKey&&k==='h'){e.preventDefault();e.stopPropagation();openFindReplace();return;}if(e.ctrlKey&&!e.metaKey&&!e.altKey&&k==='f'){e.preventDefault();e.stopPropagation();openFind();return;}const mod=e.ctrlKey||e.metaKey;if(!mod)return;if(k==='home'){e.preventDefault();goToHome();return;}if(k==='a'){e.preventDefault();selectAll();return;}if(k==='g'){e.preventDefault();openGoTo();return;}if(e.key==='F5'){e.preventDefault();openGoTo();return;}if(k==='t'){e.preventDefault();openCreateTable();return;}if(k==='1'){e.preventDefault();openFormatCells();return;}if(k==='z'){e.preventDefault();undo();return;}if(k==='-'||k==='_'){e.preventDefault();openDeleteCells();return;}if(k==='enter'){e.preventDefault();fillSelection();return;}if(e.shiftKey&&k==='l'){e.preventDefault();toggleFilter();return;}}
+  function handleShortcutKey(e){if(artemBlocksInput())return;if(cellEditorInput&&!(e.ctrlKey||e.metaKey)&&e.key!=='Escape')return;if(isModalOpen()&&e.key!=='Escape')return;if(e.key==='Escape'){closeAllModals();closeFilterDropdown();closeContextMenu();closeRibbonMenu();return;}const k=e.key.toLowerCase();if(e.ctrlKey&&!e.metaKey&&!e.altKey&&k==='h'){e.preventDefault();e.stopPropagation();openFindReplace();return;}if(e.ctrlKey&&!e.metaKey&&!e.altKey&&k==='f'){e.preventDefault();e.stopPropagation();openFind();return;}const mod=e.ctrlKey||e.metaKey;if(!mod)return;if(k==='home'){e.preventDefault();goToHome();return;}if(k==='a'){e.preventDefault();selectAll();return;}if(k==='g'){e.preventDefault();openGoTo();return;}if(e.key==='F5'){e.preventDefault();openGoTo();return;}if(k==='t'){e.preventDefault();openCreateTable();return;}if(k==='1'){e.preventDefault();openFormatCells();return;}if(k==='z'){e.preventDefault();undo();return;}if(k==='-'||k==='_'){e.preventDefault();openDeleteCells();return;}if(k==='enter'){e.preventDefault();fillSelection();return;}if(e.shiftKey&&k==='l'){e.preventDefault();toggleFilter();return;}}
   document.addEventListener('keydown',handleShortcutKey,true);
 
-  const RIBBON_HOME='<div class="ribbon-group"><div class="ribbon-row"><button type="button" class="rb" id="btnFindReplace">⇄ Найти и заменить</button></div><span class="g-label">Редактирование</span></div><div class="ribbon-group"><div class="ribbon-row"><button type="button" class="rb" id="btnBold" title="Жирный"><b>Ж</b></button><button type="button" class="rb" id="btnItalic" title="Курсив"><i>К</i></button><button type="button" class="rb" id="btnUnderline" title="Подчёркнутый"><u>Ч</u></button></div><span class="g-label">Шрифт</span></div><div class="ribbon-group"><div class="ribbon-row"><select id="fmtSelect" class="fmt-select"><option value="general">Общий</option><option value="number">Числовой</option><option value="date">Дата</option><option value="text">Текстовый</option></select><button type="button" class="rb" id="btnFormatCells">% Формат ячеек</button></div><span class="g-label">Число</span></div><div class="ribbon-group"><div class="ribbon-row"><button type="button" class="rb" id="btnFxSum">Σ Сумма</button><button type="button" class="rb" id="btnFxAvg">x̄ Среднее</button></div><span class="g-label">Функции</span></div><div class="ribbon-group"><div class="ribbon-row"><button type="button" class="rb primary" id="btnUnmerge">⧉ Отменить объединение ячеек</button></div><span class="g-label">Выравнивание</span></div>';
+  const MERGE_ICON='<svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="5" width="14" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M10 5v10M3 10h14" stroke="currentColor" stroke-width="1.2"/></svg>';
+  const FIND_ICON='<svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12.5 12.5L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  const RIBBON_HOME='<div class="ribbon-group"><div class="ribbon-row"><div class="split-btn"><button type="button" class="split-btn-main" id="btnFindMain">'+FIND_ICON+' Найти и выделить</button><button type="button" class="split-btn-menu" id="splitFindMenu" aria-label="Меню поиска">▾</button></div></div><span class="g-label">Редактирование</span></div><div class="ribbon-group"><div class="ribbon-row"><div class="split-btn"><button type="button" class="split-btn-main split-btn-multiline" id="btnMergeCenter"><span class="split-btn-icon">'+MERGE_ICON+'</span><span class="split-btn-text">Объединить и поместить<br>в центре</span></button><button type="button" class="split-btn-menu" id="splitMergeMenu" aria-label="Меню объединения">▾</button></div></div><span class="g-label">Выравнивание</span></div><div class="ribbon-group"><div class="ribbon-row"><button type="button" class="rb" id="btnBold" title="Жирный"><b>Ж</b></button><button type="button" class="rb" id="btnItalic" title="Курсив"><i>К</i></button><button type="button" class="rb" id="btnUnderline" title="Подчёркнутый"><u>Ч</u></button></div><span class="g-label">Шрифт</span></div><div class="ribbon-group"><div class="ribbon-row"><select id="fmtSelect" class="fmt-select" title="Числовой формат"><option value="general">Общий</option><option value="number">Числовой</option><option value="date">Дата</option><option value="text">Текстовый</option></select><button type="button" class="rb fmt-btn" id="btnFmtNumber" title="Числовой формат">.00</button><button type="button" class="rb" id="btnFormatCells" title="Формат ячеек (Ctrl+1)">⧉</button><button type="button" class="rb" id="btnFxSum">Σ Сумма</button><button type="button" class="rb" id="btnFxAvg">x̄ Среднее</button></div><span class="g-label">Число</span></div>';
   function ribbonDataHtml(){return'<div class="ribbon-group"><div class="ribbon-row"><button type="button" class="rb" id="btnSortAZ">A→Z</button><button type="button" class="rb" id="btnSortZA">Z→A</button><button type="button" class="rb'+(filterEnabled?' active-toggle':'')+'" id="btnFilter">⏷ Фильтр</button><button type="button" class="rb" id="btnRemoveDup">⊘ Удалить дубликаты</button></div><span class="g-label">Сортировка и фильтр</span></div>';}
   const RIBBON_FORMULAS='<div class="ribbon-group"><div class="ribbon-row"><button type="button" class="rb" id="btnAutoSum">Автосумма</button><button type="button" class="rb" id="btnInsertFn">Вставить функцию</button></div><span class="g-label">Библиотека функций</span></div>';
   const RIBBON_PLACEHOLDER='<div class="ribbon-group"><span class="g-label" style="color:#999">В этом упражнении вкладка не используется</span></div>';
 
-  function bindHomeRibbon(){document.getElementById('btnFindReplace').addEventListener('click',openFindReplace);document.getElementById('btnBold').addEventListener('click',()=>toggleCellStyle('bold'));document.getElementById('btnItalic').addEventListener('click',()=>toggleCellStyle('italic'));document.getElementById('btnUnderline').addEventListener('click',()=>toggleCellStyle('underline'));document.getElementById('fmtSelect').addEventListener('change',e=>applyFmtSelect(e.target.value));document.getElementById('btnFormatCells').addEventListener('click',openFormatCells);document.getElementById('btnFxSum').addEventListener('click',()=>{const u=selRange||{r0:selR,r1:selR,c0:selC,c1:selC};insertFxFormula('=SUM('+rcToRef(u.r0,u.c0)+':'+rcToRef(u.r1,u.c0)+')');});document.getElementById('btnFxAvg').addEventListener('click',()=>{const u=selRange||{r0:selR,r1:selR,c0:selC,c1:selC};insertFxFormula('=SUM('+rcToRef(u.r0,u.c0)+':'+rcToRef(u.r1,u.c0)+')/'+(u.r1-u.r0+1));});document.getElementById('btnUnmerge').addEventListener('click',unmergeAll);}
+  function bindHomeRibbon(){document.getElementById('btnFindMain').addEventListener('click',openFind);document.getElementById('splitFindMenu').addEventListener('click',e=>{e.stopPropagation();showRibbonMenu(e.currentTarget,[{label:'Найти…',action:openFind},{label:'Заменить…',action:openFindReplace},{label:'Перейти…',action:openGoTo},'hr',{label:'Выделить пустые ячейки',action:selectBlankCells}]);});document.getElementById('btnMergeCenter').addEventListener('click',mergeAndCenter);document.getElementById('splitMergeMenu').addEventListener('click',e=>{e.stopPropagation();showRibbonMenu(e.currentTarget,[{label:'Объединить и поместить в центре',action:mergeAndCenter},{label:'Объединить ячейки',action:mergeCellsOnly},'hr',{label:'Отменить объединение ячеек',action:unmergeAll}]);});document.getElementById('btnBold').addEventListener('click',()=>toggleCellStyle('bold'));document.getElementById('btnItalic').addEventListener('click',()=>toggleCellStyle('italic'));document.getElementById('btnUnderline').addEventListener('click',()=>toggleCellStyle('underline'));document.getElementById('fmtSelect').addEventListener('change',e=>{if(syncingRibbon)return;applyFmtSelect(e.target.value);});document.getElementById('btnFmtNumber').addEventListener('click',()=>applyFmtSelect('number'));document.getElementById('btnFormatCells').addEventListener('click',openFormatCells);syncRibbonControls();document.getElementById('btnFxSum').addEventListener('click',()=>{const u=selRange||{r0:selR,r1:selR,c0:selC,c1:selC};insertFxFormula('=SUM('+rcToRef(u.r0,u.c0)+':'+rcToRef(u.r1,u.c0)+')');});document.getElementById('btnFxAvg').addEventListener('click',()=>{const u=selRange||{r0:selR,r1:selR,c0:selC,c1:selC};insertFxFormula('=SUM('+rcToRef(u.r0,u.c0)+':'+rcToRef(u.r1,u.c0)+')/'+(u.r1-u.r0+1));});}
   function bindDataRibbon(){document.getElementById('btnSortAZ').addEventListener('click',()=>sortData(true));document.getElementById('btnSortZA').addEventListener('click',()=>sortData(false));document.getElementById('btnFilter').addEventListener('click',toggleFilter);document.getElementById('btnRemoveDup').addEventListener('click',removeDuplicates);}
   function bindFormulasRibbon(){document.getElementById('btnAutoSum').addEventListener('click',()=>{const u=selRange||{r0:DATA_ROW_START,r1:DATA_ROW_END,c0:selC,c1:selC};insertFxFormula('=SUM('+rcToRef(u.r0,u.c0)+':'+rcToRef(u.r1,u.c1)+')');});document.getElementById('btnInsertFn').addEventListener('click',()=>startCellEditor(selR,selC,'=',true));}
 
@@ -265,10 +563,12 @@
   document.getElementById('btnUndo').addEventListener('click',undo);
   function showToast(msg){toast.textContent=msg;toast.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('visible'),3600);}
   function updateTaskBanner(){taskBanner.classList.remove('success');if(functionStep>=TASKS.length){taskText.textContent=COMPLETE;taskBanner.classList.add('success');if(window.ArtemAssistant)ArtemAssistant.setTaskIndex(functionStep);return;}taskText.innerHTML=TASKS[functionStep].text;if(window.ArtemAssistant)ArtemAssistant.setTaskIndex(functionStep);}
-  function checkProgress(){const t=TASKS[functionStep];if(t&&t.check()){functionStep++;updateTaskBanner();if(functionStep>=TASKS.length){if(window.ArtemAssistant)ArtemAssistant.showCompletion();}else showToast('Задание выполнено — переходите к следующему.');}}
+  function checkProgress(){const t=TASKS[functionStep];if(t&&t.check()){functionStep++;updateTaskBanner();scheduleSave();if(functionStep>=TASKS.length){if(window.ArtemAssistant)ArtemAssistant.showCompletion();}else showToast('Задание выполнено — переходите к следующему.');}}
 
+  loadProgress();
   switchRibbonTab('home');updateTaskBanner();renderGrid();
-  ArtemAssistant.init({idleImage:'artem.png',waveGif:'hello.gif',talkGif:'talk.gif',thumbsUpImage:'artem-thumbs_up.png',name:'Артём',intro:['Привет! Сегодня готовим реестр премий к сводной таблице.'],completion:{text:'Поздравляю! Ты освоил подготовку данных к сводной таблице: заголовки, пустые строки, объединения, типы данных, Найти и заменить, СЖПРОБЕЛЫ, фильтр и Ctrl+T. Теперь можно строить сводную!',returnUrl:'https://lms.reso.ru/',returnLabel:'Вернуться к обучению'},getHint:i=>ARTEM_HINTS[i]||'Все задания выполнены! Обнови страницу, чтобы пройти ещё раз.',onIntroComplete:()=>gridScroll.focus()});
+  ArtemAssistant.init({idleImage:'artem.png',waveGif:'hello.gif',talkGif:'talk.gif',thumbsUpImage:'artem-thumbs_up.png',name:'Артём',intro:['Привет! Сегодня готовим реестр премий к сводной таблице.'],skipIntro:restoredFromSave,completion:{text:'Поздравляю! Ты освоил подготовку данных к сводной таблице: заголовки, пустые строки, объединения, типы данных, Найти и заменить, СЖПРОБЕЛЫ, фильтр и Ctrl+T. Теперь можно строить сводную!',returnUrl:'https://lms.reso.ru/',returnLabel:'Вернуться к обучению'},getHint:i=>ARTEM_HINTS[i]||'Все задания выполнены! Обнови страницу, чтобы пройти ещё раз.',onIntroComplete:()=>{gridScroll.focus();if(functionStep>=TASKS.length&&window.ArtemAssistant)ArtemAssistant.showCompletion();}});
+  window.addEventListener('beforeunload',saveProgress);
 })();
 </script>
 </body></html>

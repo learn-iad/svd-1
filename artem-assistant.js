@@ -359,6 +359,11 @@
   }
 
   function startIntro() {
+    if (config.skipIntro) {
+      els.fab.classList.add('visible');
+      if (typeof config.onIntroComplete === 'function') config.onIntroComplete();
+      return;
+    }
     if (!config.intro.length) {
       els.fab.classList.add('visible');
       if (typeof config.onIntroComplete === 'function') config.onIntroComplete();
