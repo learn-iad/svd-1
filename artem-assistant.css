@@ -1,0 +1,666 @@
+/* ===== Артём — переиспользуемый ассистент для тренажёров ===== */
+
+.artem-intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: linear-gradient(135deg, rgba(33, 115, 70, 0.92) 0%, rgba(15, 60, 38, 0.95) 100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s;
+}
+
+.artem-intro-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.artem-intro-layout {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  animation: artem-card-in 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+
+@keyframes artem-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.artem-bubble-wrap {
+  width: 100%;
+  min-width: 0;
+}
+
+.artem-bubble {
+  position: relative;
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  font-size: 15px;
+  line-height: 1.5;
+  color: #1a1a1a;
+  min-height: 72px;
+}
+
+/* Хвостик облака во вступлении — к Артёму слева */
+.artem-bubble-intro::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 10px solid transparent;
+  border-right-color: #fff;
+  border-left: none;
+}
+
+.artem-bubble-name {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #217346;
+  margin-bottom: 6px;
+}
+
+.artem-bubble-text {
+  display: block;
+  min-height: 1.5em;
+}
+
+.artem-bubble-text .artem-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: #217346;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  animation: artem-blink 0.7s step-end infinite;
+}
+
+@keyframes artem-blink {
+  50% { opacity: 0; }
+}
+
+.artem-intro-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  width: 100%;
+  position: relative;
+  z-index: 3;
+}
+
+.artem-btn {
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.artem-btn:active {
+  transform: scale(0.97);
+}
+
+.artem-btn-primary {
+  background: #fff;
+  color: #217346;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.artem-btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+.artem-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: wait;
+  transform: none;
+}
+
+.artem-btn-ghost {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.artem-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Артём слева, облако справа — крупный, сдвинут вправо */
+.artem-intro-stage {
+  flex-shrink: 0;
+  position: relative;
+  width: 100%;
+  min-height: 50vh;
+  min-height: 50dvh;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 max(24px, env(safe-area-inset-right)) max(0px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+  overflow: visible;
+}
+
+.artem-intro-cluster {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(28px, 4vw, 48px);
+  width: min(920px, 100%);
+  margin-left: clamp(72px, 16vw, 180px);
+  margin-right: clamp(24px, 5vw, 64px);
+  position: relative;
+}
+
+.artem-intro-side {
+  flex: 1 1 320px;
+  min-width: 280px;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-self: center;
+  padding-bottom: 8vh;
+  padding-left: 12px;
+  position: relative;
+  z-index: 2;
+}
+
+.artem-sprite {
+  position: relative;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.artem-sprite-hero {
+  height: min(68vh, 68dvh);
+  width: auto;
+  aspect-ratio: 2 / 3;
+  max-width: none;
+  transform: none;
+  margin-left: 0;
+}
+
+.artem-sprite img {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: opacity 0.08s ease;
+}
+
+.artem-sprite-hero img {
+  height: 100%;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  object-position: bottom left;
+}
+
+/* ===== GIF-анимации: приветствие (hello.gif) и разговор (talk.gif) ===== */
+
+.artem-sprite .artem-wave-gif,
+.artem-sprite .artem-talk-gif {
+  display: none;
+  opacity: 1;
+}
+
+.artem-pose-wave .artem-wave-gif,
+.artem-pose-talk .artem-talk-gif {
+  display: block;
+}
+
+/*
+ * Обе гифки — квадратные кадры 1024×1024 с прозрачными полями: фигура не
+ * доходит до краёв кадра. Поэтому масштабируем по высоте и центрируем саму
+ * фигуру, а не кадр, чтобы рост Артёма совпадал с высотой спрайта, как было
+ * у PNG-кадров. В talk.gif фигура занимает больше высоты кадра, чем
+ * в hello.gif, поэтому масштаб у каждой свой.
+ *
+ * Подгонка размера/положения — этими переменными:
+ *   --artem-*-gif-scale — во сколько раз кадр выше блока спрайта
+ *   --artem-*-gif-shift — горизонтальный сдвиг кадра
+ */
+.artem-sprite-hero {
+  --artem-wave-gif-scale: 1.15;
+  --artem-wave-gif-shift: -50%;
+  --artem-talk-gif-scale: 1.04;
+  --artem-talk-gif-shift: -50%;
+}
+
+.artem-sprite-hero .artem-wave-gif,
+.artem-sprite-hero .artem-talk-gif {
+  width: auto;
+  max-width: none;
+  left: 50%;
+  bottom: 0;
+  object-fit: contain;
+  object-position: bottom center;
+}
+
+.artem-sprite-hero .artem-wave-gif {
+  height: calc(100% * var(--artem-wave-gif-scale));
+  transform: translateX(var(--artem-wave-gif-shift));
+}
+
+.artem-sprite-hero .artem-talk-gif {
+  height: calc(100% * var(--artem-talk-gif-scale));
+  transform: translateX(var(--artem-talk-gif-shift));
+}
+
+/* ===== Финал: статичный кадр artem-thumbs_up (без анимации) ===== */
+.artem-pose-static .artem-static {
+  opacity: 1;
+}
+
+.artem-btn-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== Плавающая кнопка подсказки ===== */
+
+.artem-fab {
+  position: fixed;
+  z-index: 1900;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: auto;
+  height: auto;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  padding: 0;
+  overflow: visible;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.6) translateY(20px);
+  transition: opacity 0.4s ease, visibility 0.4s, transform 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.artem-fab.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1) translateY(0);
+}
+
+.artem-fab:hover {
+  transform: scale(1.04) translateY(-2px);
+}
+
+.artem-fab:hover .artem-fab-circle {
+  box-shadow: 0 10px 32px rgba(33, 115, 70, 0.5), 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+.artem-fab:active {
+  transform: scale(1.01);
+}
+
+.artem-fab-circle {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  background: linear-gradient(145deg, #2d9a5c 0%, #217346 100%);
+  box-shadow: 0 6px 24px rgba(33, 115, 70, 0.45), 0 2px 8px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.artem-fab:hover .artem-fab-circle {
+  transform: scale(1.05);
+}
+
+.artem-fab-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #217346;
+  background: #fff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid #cde6d4;
+  box-shadow: 0 2px 10px rgba(33, 115, 70, 0.2);
+  white-space: nowrap;
+  pointer-events: none;
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+}
+
+/* Круглый кроп только для фото — бейдж снаружи */
+.artem-fab-avatar {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #217346;
+}
+
+.artem-fab-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+  transform: scale(2.05) translateY(6%);
+  transform-origin: center 30%;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.artem-fab-pulse {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid #217346;
+  animation: artem-fab-ring 2s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes artem-fab-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+.artem-fab-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  z-index: 2;
+  width: 22px;
+  height: 22px;
+  background: #ff9800;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+  line-height: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: artem-badge-bounce 0.6s ease infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes artem-badge-bounce {
+  from { transform: scale(1); }
+  to { transform: scale(1.12); }
+}
+
+/* ===== Всплывающая подсказка (FAB) ===== */
+
+.artem-hint-popup {
+  position: fixed;
+  z-index: 1899;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + 96px);
+  max-width: min(340px, calc(100vw - 32px));
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.95);
+  transition: opacity 0.25s ease, visibility 0.25s, transform 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+  pointer-events: none;
+}
+
+.artem-hint-popup.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.artem-hint-popup .artem-bubble {
+  border: 2px solid #cde6d4;
+}
+
+.artem-hint-popup .artem-bubble::before {
+  left: auto;
+  right: 24px;
+  bottom: -10px;
+  transform: none;
+  border: 10px solid transparent;
+  border-top-color: #fff;
+  border-bottom: none;
+}
+
+.artem-hint-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: #f0f0f0;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.artem-hint-close:hover {
+  background: #e0e0e0;
+  color: #333;
+}
+
+@media (max-width: 480px) {
+  .artem-intro-layout {
+    justify-content: stretch;
+  }
+
+  .artem-intro-stage {
+    flex: 1;
+    min-height: 0;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 max(12px, env(safe-area-inset-right)) max(0px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  }
+
+  .artem-intro-cluster {
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-top: 0;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  .artem-intro-side {
+    order: 1;
+    flex: 0 0 auto;
+    align-self: center;
+    width: min(360px, 100%);
+    min-width: 0;
+    max-width: 100%;
+    padding-bottom: 0;
+    padding-left: 0;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+
+  .artem-sprite-hero {
+    order: 2;
+    height: min(48vh, 48dvh);
+    align-self: center;
+    margin-top: 0;
+  }
+
+  .artem-bubble-wrap {
+    width: 100%;
+  }
+
+  .artem-bubble {
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+
+  /* Хвостик облака вниз — к Артёму под текстом */
+  .artem-bubble-intro::before {
+    left: 50%;
+    top: auto;
+    bottom: -10px;
+    transform: translateX(-50%);
+    border: 10px solid transparent;
+    border-top-color: #fff;
+    border-right-color: transparent;
+    border-bottom: none;
+  }
+
+  .artem-intro-actions {
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .artem-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  .artem-fab-circle {
+    width: 56px;
+    height: 56px;
+  }
+
+  .artem-fab-avatar img {
+    transform: scale(1.95) translateY(5%);
+    transform-origin: center 28%;
+  }
+
+  .artem-fab-label {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+
+  .artem-fab-badge {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    top: -3px;
+    right: -3px;
+  }
+
+  .artem-hint-popup {
+    bottom: calc(max(16px, env(safe-area-inset-bottom)) + 88px);
+    left: 16px;
+    right: 16px;
+    max-width: none;
+  }
+}
+
+@media (max-height: 520px) and (min-width: 481px) {
+  .artem-bubble {
+    min-height: 56px;
+    font-size: 13px;
+  }
+
+  .artem-sprite-hero {
+    height: min(58vh, 58dvh);
+  }
+
+  .artem-intro-side {
+    padding-bottom: 3vh;
+  }
+}
+
+@media (max-height: 520px) and (max-width: 480px) {
+  .artem-bubble {
+    min-height: 56px;
+    font-size: 13px;
+  }
+
+  .artem-sprite-hero {
+    height: min(40vh, 40dvh);
+  }
+
+  .artem-intro-cluster {
+    padding-top: 0;
+    gap: 8px;
+  }
+}
+
+/* ===== Салют искр при нажатии «Поехали!» — круговой разлёт ===== */
+
+.artem-spark-salute {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2100;
+  overflow: hidden;
+}
+
+.artem-spark {
+  position: fixed;
+  width: var(--size);
+  height: var(--size);
+  margin-left: calc(var(--size) / -2);
+  margin-top: calc(var(--size) / -2);
+  background: var(--color);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--color), 0 0 14px rgba(255, 255, 255, 0.45);
+  opacity: 0;
+  animation: artem-spark-fly var(--duration) cubic-bezier(0.22, 0.61, 0.36, 1) var(--delay) forwards;
+}
+
+@keyframes artem-spark-fly {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1.2);
+  }
+  25% {
+    opacity: 1;
+    transform: translate(calc(var(--vx) * 0.55), calc(var(--vy) * 0.55)) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--vx), var(--vy)) scale(0.1);
+  }
+}
